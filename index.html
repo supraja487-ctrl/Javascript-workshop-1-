@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale">
+    <title>Personal Finance Manager</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    width: 60%;
+    margin: 50px auto;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2, h3 {
+    text-align: center;
+}
+
+.balance-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.transaction-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.transaction-form input, .transaction-form select, .transaction-form button {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+#transaction-list td {
+    color: red;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Personal Finance Manager</h1>
+        <div class="balance-container">
+            <h2>Balance: ₹<span id="balance">0.00</span></h2>
+        </div>
+        <div class="transaction-form">
+            <input type="text" id="description" placeholder="Description">
+            <input type="number" id="amount" placeholder="Amount">
+            <select id="type">
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+            </select>
+            <button onclick="addTransaction()">Add Transaction</button>
+        </div>
+        <h3>Transactions</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="transaction-list">
+                <tr>
+                    <td colspan="4">No transactions yet</td>
+                </tr>
+            </tbody>
+        </table>
+        <button onclick="exportToPDF()">Export to PDF</button>
+    </div>
+    <script>
+        var balance = 0;
+       var balanceEl = document.getElementById('balance');
+       var transactionListEl = document.getElementById('transaction-list');
+
+    function addTransaction() {
+    var description = document.getElementById('description').value;
+    var amount = parseFloat(document.getElementById('amount').value);
+    var type = document.getElementById('type').value;
+
+    if (!description || isNaN(amount)) {
+        alert('Please enter valid data');
+        return;
+    }
+
+    var transactionRow = document.createElement('tr');
+
+    transactionRow.innerHTML = `
+        <td>${description}</td>
+        <td>₹${amount.toFixed(2)}</td>
+        <td>${type}</td>
+        <td><button onclick="removeTransaction(this, ${amount}, '${type}')">Delete</button></td>
+    `;
+
+    transactionListEl.appendChild(transactionRow);
+
+    if (type === 'Income') {
+        balance += amount;
+    } else if (type === 'Expense') {
+        balance -= amount;
+    }
+
+    updateBalance();
+}
+
+function removeTransaction(button, amount, type) {
+    button.parentElement.parentElement.remove();
+
+    if (type === 'Income') {
+        balance -= amount;
+    } else if (type === 'Expense') {
+        balance += amount;
+    }
+
+    updateBalance();
+}
+
+function updateBalance() {
+    balanceEl.textContent = balance.toFixed(2);
+}
+
+function exportToPDF() {
+    alert("Export to PDF feature is not implemented yet.");
+}
+
+    </script>
+</body>
+</html>
